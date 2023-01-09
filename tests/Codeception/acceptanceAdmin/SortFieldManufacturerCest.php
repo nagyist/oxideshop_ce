@@ -14,63 +14,23 @@ use OxidEsales\EshopCommunity\Tests\Codeception\AcceptanceAdminTester;
 
 final class SortFieldManufacturerCest
 {
-    /** @param AcceptanceAdminTester $I */
+    /** @param AcceptanceAdminTester $I
+     * @group manufacturer
+     */
     public function sortField(AcceptanceAdminTester $I): void
     {
         $I->wantToTest('whether oxsort field exists and whether it saves the entered values');
 
-        $I->loginAdmin();
-        $I->selectNavigationFrame();
-        $I->retryClick(Translator::translate('mxmainmenu'));
-        $I->retryClick(Translator::translate('MANUFACTURER_LIST_MENUSUBITEM'));
-        $I->selectEditFrame();
-        $I->see(Translator::translate('GENERAL_SORT'));
+        $adminPanel = $I->loginAdmin();
 
-        $I->fillField(Translator::translate('editval[oxmanufacturers__oxtitle]'), 'test_manufacturer');
-        $I->fillField('editval[oxmanufacturers__oxsort]', 3);
-        $I->click(Translator::translate('saveArticle'));
+        $manufacturerTab = $adminPanel->openManufacturerTab();
 
-        $I->seeInField('editval[oxmanufacturers__oxsort]', '3');
-        $I->seeInDatabase(
-            'oxmanufacturers',
-            [
-                'OXTITLE' => 'test_manufacturer',
-                'OXSORT' => 3
-            ]
-        );
+        $manufacturerTab->createNewManufacturer('Test', '3');
 
+        $manufacturerTab->createNewManufacturer('Test2', 'Invalid value');
 
-        $I->selectNavigationFrame();
-//        $I->retryClick(Translator::translate('mxmainmenu'));
-        $I->retryClick(Translator::translate('MANUFACTURER_LIST_MENUSUBITEM'));
-        $I->selectEditFrame();
-        $I->fillField(Translator::translate('editval[oxmanufacturers__oxtitle]'), 'test_manufacturer2');
-        $I->click(Translator::translate('saveArticle'));
+        $manufacturerTab->createNewManufacturer('Test3', '');
 
-        $I->seeInField('editval[oxmanufacturers__oxsort]', '0');
-        $I->seeInDatabase(
-            'oxmanufacturers',
-            [
-                'OXTITLE' => 'test_manufacturer2',
-                'OXSORT' => 0
-            ]
-        );
-
-
-        $I->selectNavigationFrame();
-        $I->retryClick(Translator::translate('MANUFACTURER_LIST_MENUSUBITEM'));
-        $I->selectEditFrame();
-        $I->fillField(Translator::translate('editval[oxmanufacturers__oxtitle]'), 'test_manufacturer3');
-        $I->fillField('editval[oxmanufacturers__oxsort]', 'Invalid input');
-        $I->click(Translator::translate('saveArticle'));
-
-        $I->seeInField('editval[oxmanufacturers__oxsort]', '0');
-        $I->seeInDatabase(
-            'oxmanufacturers',
-            [
-                'OXTITLE' => 'test_manufacturer3',
-                'OXSORT' => 0
-            ]
-        );
+        $manufacturerTab->SortHelpIsAvailable();
     }
 }
