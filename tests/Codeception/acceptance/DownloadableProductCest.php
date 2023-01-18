@@ -96,12 +96,11 @@ final class DownloadableProductCest
     private function makePurchaseComplete(AcceptanceTester $I): void
     {
         $basket = new Basket($I);
-        $userCheckoutPage = $basket->addProductToBasketAndOpenUserCheckout('1002-1', 1);
-        $userCheckoutPage->goToNextStep();
-        $I->click(['name' => 'userform']);
-        $I->checkOption('oxdownloadableproductsagreement');
-        $I->click("//form[@id='orderConfirmAgbBottom']//button");
-        $userCheckoutPage->seeOnBreadCrumb(Translator::translate('ORDER_COMPLETED'));
+        $basket->addProductToBasketAndOpenUserCheckout('1002-1', 1)
+            ->goToNextStep()
+            ->goToNextStep()
+            ->confirmDownloadableProductsAgreement()
+            ->submitOrderSuccessfully();
     }
 
     /**
